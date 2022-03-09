@@ -29,10 +29,10 @@ const routes = [
       }
     },
   },
-  // {
-  //   path: '*',
-  //   redirect: 'main',
-  // },
+  {
+    path: '/:catchAll(.*)',
+    redirect: '/',
+  },
 ]
 
 export default routes;
