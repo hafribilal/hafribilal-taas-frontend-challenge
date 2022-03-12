@@ -14,7 +14,7 @@ const routes = [
         next();
       }
     },
-    meta:{
+    meta: {
       title: 'Repositories Page'
     }
   },
@@ -30,7 +30,7 @@ const routes = [
         next();
       }
     },
-    meta:{
+    meta: {
       title: 'Authorization Page'
     }
   },
