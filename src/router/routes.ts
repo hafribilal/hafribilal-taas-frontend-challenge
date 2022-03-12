@@ -7,14 +7,16 @@ const routes = [
     component: () => import('../components/Repositories.vue'),
     beforeEnter: (to, from, next) => {
       const user = useUser();
+      console.log('isConnected', user.isConnected);
       if (!user.isConnected) {
         next({ name: 'auth' });
-        console.log('connect your gh account');
       } else {
         next();
-        console.log('welcome back');
       }
     },
+    meta:{
+      title: 'Repositories Page'
+    }
   },
   {
     path: "/auth",
@@ -28,6 +30,9 @@ const routes = [
         next();
       }
     },
+    meta:{
+      title: 'Authorization Page'
+    }
   },
   {
     path: '/:catchAll(.*)',
