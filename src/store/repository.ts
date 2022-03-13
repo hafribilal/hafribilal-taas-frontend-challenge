@@ -77,6 +77,44 @@ export const useRepository = defineStore('repository', {
           }
         });
     },
+    fetchCommits(branche?: string): Array<commit> {
+      return this.github.fetchRepositoryCommits(this.getUser.getAuthId, this.full_name, branche, pagination)
+        .then((res: Array<commit> | commit) => {
+          if (Array.isArray(res)) {
+            this.commits = new Array<commit>();
+            this.commits = res.map(commit => {
+              const val = commit.commit.message.split('\n');
+              const message = val[0];
+              val.shift();
+              const description = val.join('\r\n');
+              return {
+                author: Object.assign(commit.commit.author, commit.author || {}),
+                message: message,
+                description: description,
+                verification: commit.commit.verification,
+                comment_count: commit.commit.comment_count,
+                date: commit.commit.author.date,
+                sha: commit.sha
+              }
+            });
+          } else {
+            this.commits = new Array<commit>();
+            const val = res.commit.message.split('\n');
+            const message = val[0];
+            val.shift();
+            const description = val.join('\r\n');
+            this.commits.push({
+              author: res.author,
+              message: message,
+              description: description,
+              verification: res.verification,
+              comment_count: res.comment_count,
+              date: res.committer.date,
+              sha: res.sha
+            });
+          }
+        });
+    },
   }
 })
 
