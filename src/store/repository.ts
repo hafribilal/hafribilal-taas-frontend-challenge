@@ -31,14 +31,50 @@ export const useRepository = defineStore('repository', {
     getDefaultBranche: (state) => state.default_branch
   },
   actions: {
+    async setRepository(repo?: repository): Promise<repository> {
+      return new Promise<repository>(resolve => {
+        resolve(Object.assign(this, repo))
+        this.branches = new Array<branche>();
+        this.commits = new Array<commit>();
+      }).then(res => {
+        this.fetchBranches();
+        this.fetchCommits();
+        return res;
+      });
+    },
+    async setRepositoryById(repositoryId?: number): Promise<repository> {
+      const index = this.getUser.repos.findIndex(r => r.id === repositoryId);
+      const repo = this.getUser.repos[index];
+      return this.setRepository(repo);
+    },
     fetchRepositories(): Array<repository> {
       return this.github.fetchRepositories(this.getUser.getAuthId)
         .then((res: Array<repository>) => {
           res.sort((a, b) => {
             return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
           });
-          Object.assign(this, res[0]);
+          this.setRepository(res[0]);
           return res;
+        });
+    },
+    fetchBranches(): Array<branche> {
+      return this.github.fetchRepositoryBranches(this.getUser.getAuthId, this.full_name)
+        .then((res: Array<branche> | branche) => {
+          if (Array.isArray(res)) {
+            this.branches = res.map(branche => {
+              return {
+                name: branche.name,
+                protected: branche.protected,
+                sha: branche.commit.sha
+              }
+            });
+          } else {
+            this.branches.push({
+              name: res.name,
+              protected: res.protected,
+              sha: res.commit.sha
+            });
+          }
         });
     },
   }
