@@ -4,6 +4,8 @@ import dayjs from 'dayjs'
 
 // const _user = useUser();
 
+var pagination = { page: 1, per_page: 50 };
+
 export const useRepository = defineStore('repository', {
   state: (): repository => {
     return {
@@ -115,6 +117,25 @@ export const useRepository = defineStore('repository', {
           }
         });
     },
+    fetchCommitsNext(branche?: string) {
+      this.nextPage;
+      this.fetchCommits(branche);
+    },
+    fetchCommitsPrev(branche?: string) {
+      this.prevPage;
+      this.fetchCommits(branche);
+    },
+    resetPagination() {
+      return pagination = { page: 1, per_page: 25 }
+    },
+    nextPage() {
+      // const page = pagination.page = pagination.page + 1;
+      return ++pagination.page;
+    },
+    prevPage() {
+      // const page = pagination.page = pagination.page - 1;
+      return --pagination.page;
+    }
   }
 })
 
