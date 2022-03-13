@@ -1,30 +1,35 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import router from '../router'
 import { useUser } from '../store/user';
+import { default as TheAlert } from './TheAlert.vue';
 
 const isLoading = ref(false);
 const user = useUser();
+const authId = ref(user.authId);
+const isAlertOpned = ref(false);
 
-function connect(){
+async function connect(){
   isLoading.value = true;
-  setTimeout(()=>{
-    user.connect().then(()=>{
-      setTimeout(()=>{
-        isLoading.value = false;
-        router.push({name:'repos'});
-      },200)
-    }).catch(()=>{
-      setTimeout(()=>{
-        isLoading.value = false;
-      },200)
-    });
-  }, 300)
+  setTimeout(async()=> {
+    await user.connect();
+    if (user.isConnected) {
+      console.log('hello');
+      router.push({name:'repos'});
+    }else{
+      isAlertOpned.value = true;
+    }
+    isLoading.value = false;
+  }, 300);
 }
-
 </script>
 
 <template>
+  <teleport to="main">
+    <TheAlert :show="isAlertOpned" :type="'error'" :duration="5000" @close="isAlertOpned = false">
+      <template #title><strong>Ops!! </strong> Connection Denied</template>
+    </TheAlert>
+  </teleport>
   <section class="container">
     <button type="button"
             class="oauth-btn"
@@ -43,7 +48,7 @@ function connect(){
   </section>
 </template>
 
-<style>
+<style lang="scss" scoped>
 .container{
   @apply m-0 w-screen h-screen flex flex-col flex-1 justify-center items-center p-6;
 }
