@@ -3,21 +3,23 @@
 </script>
 
 <template>
-
-    <router-view v-slot="{ Component }">
-
-      <transition name="fade" mode="out-in">
+  <router-view v-slot="{ Component }">
+    <transition name="hello" mode="out-in">
+      <Suspense>
         <main class="root mb-auto">
           <component :is="Component"/>
         </main>
-      </transition>
-
-      <footer class="footer">
-        coded with ❤️ for <strong class="font-bold">YouCan</strong>
-      </footer>
-
-    </router-view>
-
+        <template #fallback>
+          <div class="h-full w-full mb-auto flex justify-center items-center text-black text-xl">
+            Loading...
+          </div>
+        </template>
+      </Suspense>
+    </transition>
+    <footer class="footer">
+      coded with ❤️ for <strong class="font-bold">YouCan</strong>
+    </footer>
+  </router-view>
 </template>
 
 <style>
@@ -28,7 +30,23 @@
   @apply w-full text-center p-2 -mt-12 text-youcan-600;
 }
 
-.fade-enter-active, .fade-leav-active{
-  @apply transition duration-300 ease-in-out opacity-50;
+/* .fade-enter-active,
+.fade-leave-active {
+  @apply transition ease-in-out delay-150 duration-300;
+}
+
+.fade-enter-from,
+.fade-leave-active {
+  @apply -translate-y-2 opacity-50
+} */
+
+.hello-enter-active,
+.hello-leave-active {
+  @apply transition ease-in-out delay-150 duration-300;
+}
+
+.hello-enter-from,
+.hello-leave-to {
+  @apply -translate-y-full
 }
 </style>
