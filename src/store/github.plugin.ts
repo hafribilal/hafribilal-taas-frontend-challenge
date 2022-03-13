@@ -19,10 +19,21 @@ class Github {
   connect() {
     return this.api().connect() // Connect to GitHub
   }
+
   async get(path: string) {
     return this.api().auth(Github.secretKey).get(path).then((response) => {
+      // try {
+      //   console.log('response.headers:',  JSON.stringify(response.headers));
+      // } catch (err) {
+      //   console.warn(err);
+      // }
       return response.json();
     })
+  }
+  async fetchProfile(authId: string) {
+    Github.secretKey = authId;
+    let path = `/user`;
+    return this.get(path);
   }
 }
 
