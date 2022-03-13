@@ -35,6 +35,11 @@ class Github {
     let path = `/user`;
     return this.get(path);
   }
+  async fetchRepositories(authId: string) {
+    Github.secretKey = authId;
+    let path = `/user/repos`;
+    return this.get(path);
+  }
 }
 
 export function github(context: PiniaPluginContext) {
