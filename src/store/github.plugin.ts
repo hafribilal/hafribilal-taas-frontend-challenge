@@ -40,6 +40,16 @@ class Github {
     let path = `/user/repos`;
     return this.get(path);
   }
+  async fetchRepositoryBranches(authId: string, full_name: string) {
+    Github.secretKey = authId;
+    let path = `/repos/${full_name}/branches`;
+    return this.get(path);
+  }
+  async fetchRepositoryCommits(authId: string, full_name: string, branche: string, pagination: { page: number, per_page: number } = { page: 1, per_page: 20 }) {
+    Github.secretKey = authId;
+    let path = `/repos/${full_name}/commits` + (branche ? `?page=${pagination.page}&per_page=${pagination.per_page}&sha=${branche}` : '');
+    return this.get(path);
+  }
 }
 
 export function github(context: PiniaPluginContext) {
