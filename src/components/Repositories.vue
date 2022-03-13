@@ -1,41 +1,102 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import RepositoryCommits from './RepositoryCommits.vue';
-const repos = ['Repository A', 'Repository B', 'Repository C', 'Repository D'];
+import { ref, computed, onMounted } from 'vue';
+import { default as RepositoryCommits } from './RepositoryCommits.vue';
+import { default as TheAlert } from './TheAlert.vue';
+import { useUser } from '../store/user';
+import { useRepository, repository as _repository } from '../store/repository';
+
+const user = useUser();
+const repository = useRepository();
+
 const selectedRepo = ref(0);
+const isAlertOpned = ref(false);
+const isLoading = ref(false);
+
+const search = ref('');
+const search_option = ref('name');
+
+// COMPUTED
+const getRepoTitles = computed<Array<{id:number, name:string}>>(()=>{
+  return user.search(search.value, search_option.value)
+      .map(repo=> {
+        return {
+          id:repo.id,
+          name:repo.name
+        };
+      });
+});
+
+// METHODS
+async function openRepo(id:number){
+  repository.setRepositoryById(id);
+}
+function openAlert(){
+  console.log('open alert');
+  isAlertOpned.value = true;
+}
+function closeAlert(){
+  console.log('close alert');
+  isAlertOpned.value = false;
+}
+
+await user.fetchProfile();
+user.fetchRepositories();
+
+
+onMounted(()=>{
+  setTimeout(()=>openAlert(),1500);
+  setTimeout(()=>{
+    isLoading.value = false;
+  },500);
+})
 </script>
 
 <template>
+  <teleport to="main">
+    <TheAlert :show="isAlertOpned" :type="'success'" :duration="3000" @close="closeAlert()">
+      <template #title>Your Github account was successfully authorized</template>
+    </TheAlert>
+  </teleport>
   <section class="hero gradient-bg">
     <header class="header">
       <!-- <h1>YouCan Coding Challeng</h1> -->
       <div class="profile">
-        <span class="username">Bilal Hafri</span>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" alt="hafribilal" class="avatar">
+        <span class="username">{{ user.name }}</span>
+        <img :src="user.avatar_url" :alt="user.getUsername" class="avatar">
       </div>
     </header>
     <div class="search">
-      <input type="text" placeholder="Start searching by name..." class="search-box">
-      <select class="search-option">
-        <option value="">Name</option>
+      <input type="text" v-model="search" placeholder="Start searching by name..." class="search-box">
+      <select v-model="search_option" class="search-option">
+        <option value="name">Name</option>
       </select>
     </div>
   </section>
   <section class="content">
     <aside class="aside">
-      <ul class="list-item">
-        <li v-for="(repo, index) in repos"
-            :key="index"
-            class="item"
-            :class="selectedRepo === index ? 'item-selected' : null"
-            @click="selectedRepo = index">{{repo}}</li>
-      </ul>
+        <ul v-if="!isLoading && getRepoTitles.length > 0" class="repository-list">
+            <li v-for="(repo, index) in getRepoTitles"
+                :key="repo.id"
+                class="item"
+                :class="selectedRepo === index ? 'item-selected' : null"
+                @click="selectedRepo = index; openRepo(repo.id)">{{repo.name}}</li>
+        </ul>
+        <ul v-else class="repository-list">
+          <li v-for="(i,j) in 5" :key="j*5" class="repository-item p-4 flex">
+            <strong class="border animate-pulse bg-gray-200 rounded-full flex-1 p-1"></strong>
+          </li>
+        </ul>
     </aside>
-    <main class="commits">
-      <RepositoryCommits>
-        <h1 class="repo-title">{{ repos[selectedRepo] }}</h1>
-      </RepositoryCommits>
-    </main>
+    <section class="commits">
+      <suspense>
+        <RepositoryCommits>
+          <h1 class="repo-title">{{ repository.name }}</h1>
+        </RepositoryCommits>
+        <template #fallback>
+          Loading...
+        </template>
+      </suspense>
+    </section>
   </section>
 </template>
 
@@ -68,11 +129,11 @@ const selectedRepo = ref(0);
   }
 
   .content{
-    @apply mt-6 w-1/2 flex gap-2 select-none mb-14;
+    @apply mt-6 w-3/5 flex gap-2 select-none mb-14;
   }
   .aside{
-    @apply w-3/12 h-full;
-    .list-item{
+    @apply w-1/4 h-full;
+    .repository-list{
       @apply rounded-lg bg-gray-50 divide-y divide-gray-200 overflow-hidden shadow;
       .item{
         @apply py-2 pl-4 truncate cursor-pointer;
@@ -89,7 +150,7 @@ const selectedRepo = ref(0);
     }
   }
   .commits{
-    @apply flex-1 p-2 rounded-lg bg-white shadow;
+    @apply min-h-fit w-3/4 p-2 rounded-lg bg-white shadow;
     .repo-title{
       @apply text-4xl font-bold m-4;
     }
