@@ -21,9 +21,26 @@ export const useRepository = defineStore('repository', {
   },
   getters: {
     getUser: () => useUser(),
+    getTimeline: (state) => state.commits.reduce(function(r, a) {
+      const date = dayjs(a.date).format('YYYY-MM-DD');
+
+      r[date] = r[date] || [];
+      r[date].push(a);
+      return r;
+    }, Object.create(null)),
+    getDefaultBranche: (state) => state.default_branch
   },
   actions: {
-    //
+    fetchRepositories(): Array<repository> {
+      return this.github.fetchRepositories(this.getUser.getAuthId)
+        .then((res: Array<repository>) => {
+          res.sort((a, b) => {
+            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+          });
+          Object.assign(this, res[0]);
+          return res;
+        });
+    },
   }
 })
 
