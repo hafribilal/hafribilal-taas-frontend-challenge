@@ -19,6 +19,11 @@ class Github {
   connect() {
     return this.api().connect() // Connect to GitHub
   }
+  async get(path: string) {
+    return this.api().auth(Github.secretKey).get(path).then((response) => {
+      return response.json();
+    })
+  }
 }
 
 export function github(context: PiniaPluginContext) {
