@@ -2,10 +2,16 @@ import { PiniaPluginContext } from 'pinia'
 import Pizzly from 'pizzly-js'
 
 class Github {
-  readonly host: string = 'https://youcan-coding-challenge.herokuapp.com/auth/callback'
+  readonly PIZZLY_HOSTNAME: string = 'https://youcan-coding-challenge.herokuapp.com'
+  readonly PIZZLY_PUBLISHABLE_KEY: string = ''
+  readonly PIZZLY_SETUP_ID_GITHUB_DEMO_APP: string = 'e2df8c0b-a412-41b9-b762-643bd565e494'
   readonly pizzly: Pizzly = new Pizzly()
+  static secretKey: string = 'secure-secret-key'
   constructor() {
-    this.pizzly = new Pizzly({ host: this.host });
+    this.pizzly = new Pizzly({
+      host: this.PIZZLY_HOSTNAME,
+      // publishableKey: this.PIZZLY_PUBLISHABLE_KEY
+    });
   }
   api() {
     return this.pizzly.integration('github');
