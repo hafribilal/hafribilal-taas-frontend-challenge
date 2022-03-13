@@ -10,6 +10,7 @@
   "dependencies": {
     "autoprefixer": "^10.4.2",
     "axios": "^0.26.0",
+    "dayjs": "^1.10.8",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-vue": "^8.5.0",
     "pinia": "^2.0.11",
