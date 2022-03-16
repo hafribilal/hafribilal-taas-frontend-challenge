@@ -22,6 +22,7 @@ const routes = [
     path: "/auth",
     name: "auth",
     component: () => import('../components/Auth.vue'),
+    props: route => ({ query: route.query }),
     beforeEnter: (to, from, next) => {
       const user = useUser();
       if (user.isConnected) {
