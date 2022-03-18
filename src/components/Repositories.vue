@@ -61,7 +61,7 @@ onMounted(()=>{
     <header class="header">
       <!-- <h1>YouCan Coding Challeng</h1> -->
       <div class="profile">
-        <span class="username">{{ user.name }}</span>
+        <span class="username">{{ user.name || user.login }}</span>
         <img :src="user.avatar_url" :alt="user.getUsername" class="avatar">
       </div>
     </header>

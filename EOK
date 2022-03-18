@@ -1,0 +1,19 @@
+vite v2.8.6 building for production...
+transforming...
+✓ 48 modules transformed.
+rendering chunks...
+dist/index.html                         0.50 KiB
+dist/assets/index.95a62eb0.js           6.94 KiB / gzip: 2.97 KiB
+dist/assets/index.95a62eb0.js.map       20.25 KiB
+dist/assets/Repositories.a26ad521.js    6.79 KiB / gzip: 3.20 KiB
+dist/assets/Repositories.a26ad521.js.map 13.06 KiB
+dist/assets/TheAlert.f338a7a2.js        2.55 KiB / gzip: 1.02 KiB
+dist/assets/TheAlert.f338a7a2.js.map    3.77 KiB
+dist/assets/Auth.2076e5f8.js            1.40 KiB / gzip: 0.88 KiB
+dist/assets/Auth.2076e5f8.js.map        2.45 KiB
+dist/assets/index.ee5337ab.css          16.35 KiB / gzip: 3.85 KiB
+dist/assets/Repositories.d031b6f0.css   6.77 KiB / gzip: 1.43 KiB
+dist/assets/TheAlert.4c956a40.css       1.33 KiB / gzip: 0.47 KiB
+dist/assets/Auth.d4ff1a64.css           2.29 KiB / gzip: 0.70 KiB
+dist/assets/vendor.283b39d3.js          102.25 KiB / gzip: 40.29 KiB
+dist/assets/vendor.283b39d3.js.map      829.83 KiB

@@ -6,7 +6,6 @@ import { useRepository, repository } from './repository';
 export const useUser = defineStore('user', {
   state: (): user => {
     return {
-      authId: '',
       login: '',
       name: '',
       bio: '',
@@ -16,12 +15,6 @@ export const useUser = defineStore('user', {
     }
   },
   getters: {
-    getAuthId: (state) => {
-      return state.authId ? state.authId : state.authId = localStorage.authId;
-    },
-    isConnected: (state) => {
-      return Boolean(state.authId) || localStorage.hasOwnProperty("authId")
-    },
     getUsername: (state) => state.login,
     getRepoTitles: (state) => {
       return state.repos.map(repo => repo.name);
@@ -29,6 +22,9 @@ export const useUser = defineStore('user', {
     getCurrentRepository: (): any => useRepository()
   },
   actions: {
+    isConnected(): boolean {
+      return this.github.isConnected();
+    },
     search(value: string, option: string = 'name'): Array<repository> {
       if (Boolean(value)) {
         switch (option) {
@@ -43,14 +39,12 @@ export const useUser = defineStore('user', {
         return this.repos;
       }
     },
-    async connect(): Promise<{ authId: string }> {
-      return this.github.connect().then((res: any) => {
-        this.authId = res.authId;
-        return localStorage.authId = res.authId;
-      }).catch((error: any) => console.error('It failed!', error))
+    // check
+    async connect(): Promise<any> {
+      return this.github.connect();
     },
     async fetchProfile(): Promise<user> {
-      return this.github.fetchProfile(this.getAuthId).then((res: user) => Object.assign(this, res))
+      return this.github.fetchProfile().then((res: user) => Object.assign(this, res))
     },
     async fetchRepositories(): Promise<Array<repository>> {
       return this.getCurrentRepository.fetchRepositories().then((res: Array<repository>) => this.repos = res)
@@ -59,7 +53,6 @@ export const useUser = defineStore('user', {
 });
 
 export type user = {
-  authId: string,
   login: string,
   name: string,
   bio: string,

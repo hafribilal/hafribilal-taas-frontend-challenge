@@ -7,8 +7,8 @@ const routes = [
     component: () => import('../components/Repositories.vue'),
     beforeEnter: (to, from, next) => {
       const user = useUser();
-      console.log('isConnected', user.isConnected);
-      if (!user.isConnected) {
+      console.log('isConnected', user.isConnected());
+      if (!user.isConnected()) {
         next({ name: 'auth' });
       } else {
         next();
@@ -22,9 +22,10 @@ const routes = [
     path: "/auth",
     name: "auth",
     component: () => import('../components/Auth.vue'),
+    props: route => ({ query: route.query }),
     beforeEnter: (to, from, next) => {
       const user = useUser();
-      if (user.isConnected) {
+      if (user.isConnected()) {
         next({ name: 'repos' })
       } else {
         next();
