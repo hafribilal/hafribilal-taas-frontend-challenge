@@ -50,7 +50,7 @@ export const useRepository = defineStore('repository', {
       return this.setRepository(repo);
     },
     fetchRepositories(): Array<repository> {
-      return this.github.fetchRepositories(this.getUser.getAuthId)
+      return this.github.fetchRepositories()
         .then((res: Array<repository>) => {
           res.sort((a, b) => {
             return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
@@ -60,7 +60,7 @@ export const useRepository = defineStore('repository', {
         });
     },
     fetchBranches(): Array<branche> {
-      return this.github.fetchRepositoryBranches(this.getUser.getAuthId, this.full_name)
+      return this.github.fetchRepositoryBranches(this.full_name)
         .then((res: Array<branche> | branche) => {
           if (Array.isArray(res)) {
             this.branches = res.map(branche => {
@@ -80,7 +80,7 @@ export const useRepository = defineStore('repository', {
         });
     },
     fetchCommits(branche?: string): Array<commit> {
-      return this.github.fetchRepositoryCommits(this.getUser.getAuthId, this.full_name, branche, pagination)
+      return this.github.fetchRepositoryCommits(this.full_name, branche, pagination)
         .then((res: Array<commit> | commit) => {
           if (Array.isArray(res)) {
             this.commits = new Array<commit>();
